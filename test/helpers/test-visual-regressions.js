@@ -1,4 +1,4 @@
-import { beforeEach, describe, test, vi } from 'vitest';
+import { describe, test } from 'vitest';
 import { addTranslations } from '../../src/lib/i18n/i18n.js';
 import * as en from '../../src/translations/translations.en.js';
 
@@ -33,63 +33,7 @@ const storyConf = {
 // Register languages
 addTranslations(en.lang, en.translations);
 
-// const OriginalDate = Date;
-// beforeEach(async () => {
-//   // await executeServerCommand('install-clock');
-//   Date = class MockedDate extends OriginalDate {
-//     constructor() {
-//       super();
-
-//       return new OriginalDate('2024-02-02T10:00:00');
-//     }
-
-//     static now() {
-//       return new OriginalDate('2024-02-02T10:00:00');
-//     }
-
-//     getTime() {
-//       return new OriginalDate('2024-02-02T10:00:00').getTime();
-//     }
-//   };
-// });
-// // beforeEach(async () => {
-// //   await executeServerCommand('pause-clock');
-// // });
-// afterEach(async () => {
-//   // await executeServerCommand('resume-clock');
-//   Date = OriginalDate;
-// });
-
 const IGNORE_PATTERNS_FOR_VISUAL_REGRESSIONS = ['simulation'];
-
-/**
- * Recursively injects a <style> tag with the given CSS into all shadow roots in the subtree.
- * @param {Node} root - The root node to start searching from (usually document.body)
- * @param {string} css - The CSS string to inject
- */
-export function injectCssIntoAllShadowRoots(root, css) {
-  if (root.shadowRoot) {
-    const style = document.createElement('style');
-    style.textContent = css;
-    root.shadowRoot.appendChild(style);
-  }
-  // Traverse children (for both shadow and light DOM)
-  if (root.children.length > 0) {
-    Array.from(root.children).forEach((child) => injectCssIntoAllShadowRoots(child, css));
-  }
-
-  if (root.shadowRoot != null && root.shadowRoot.children.length > 0) {
-    Array.from(root.shadowRoot.children).forEach((child) => injectCssIntoAllShadowRoots(child, css));
-  }
-}
-
-const DISABLE_ANIMATIONS_CSS = `
-  *, *::before, *::after {
-    transition: none !important;
-    animation: none !important;
-    animation-duration: 0s !important;
-  }
-`;
 
 /**
  * Transform the result of an imported module from a story file into an array of story functions that can be used to render every story.
@@ -150,13 +94,6 @@ export async function testStories(storiesModule) {
   );
 
   describe('blabal', () => {
-    beforeEach(() => {
-      // tell vitest we use mocked time
-      vi.useFakeTimers();
-      const date = new Date(2000, 1, 1, 13);
-      vi.setSystemTime(date);
-    });
-
     if (shouldRunTests) {
       stories.forEach(({ storyName, storyFunction }) => {
         if (
@@ -165,21 +102,9 @@ export async function testStories(storiesModule) {
         ) {
           test(`${componentTag} ${storyName} desktop`, async function () {
             if (storyFunction.parameters.tests.visualRegressions.enable) {
-              // it('should have no visual regression', async function () {
-              //   await setViewport(viewports.desktop);
-              //   const element = await fixture(storyFunction({}, storyConf));
-
-              //   await elementUpdated(element);
-              //   await executeServerCommand('wait-for-network-idle');
-
-              //   injectCssIntoAllShadowRoots(element, DISABLE_ANIMATIONS_CSS);
-              //   // await executeServerCommand('pause-clock');
-              //   await visualDiff(element, `${componentTag}-${storyName}-desktop`);
-              // });
-
               const storyElement = storyFunction({}, storyConf);
               document.body.replaceChildren(storyElement);
-              injectCssIntoAllShadowRoots(document.body, DISABLE_ANIMATIONS_CSS);
+              await storyElement.updateComplete;
             }
           });
 

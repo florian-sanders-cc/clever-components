@@ -10,6 +10,7 @@ export default defineConfig({
       instances: [{ browser: 'chromium' }],
       headless: false,
     },
+    setupFiles: './test/setup-mock-date.js',
   },
   resolve: {
     alias: [
