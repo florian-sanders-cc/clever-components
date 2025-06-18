@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import generateCem from './cem/generate-cem-vite-plugin.js';
+import playwrightScreenshotPlugin from './wds/playwright-screenshot-command.js';
 
 export default defineConfig({
   test: {
@@ -23,5 +24,5 @@ export default defineConfig({
       },
     ],
   },
-  plugins: [generateCem()],
+  plugins: [generateCem(), playwrightScreenshotPlugin()],
 });

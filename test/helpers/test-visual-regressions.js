@@ -1,4 +1,5 @@
-import { describe, test } from 'vitest';
+import { commands } from '@vitest/browser/context';
+import { describe, expect, test } from 'vitest';
 import { addTranslations } from '../../src/lib/i18n/i18n.js';
 import * as en from '../../src/translations/translations.en.js';
 
@@ -105,6 +106,8 @@ export async function testStories(storiesModule) {
               const storyElement = storyFunction({}, storyConf);
               document.body.replaceChildren(storyElement);
               await storyElement.updateComplete;
+              const result = await commands.playwrightScreenshot();
+              expect(result).toEqual({ someValue: true });
             }
           });
 
