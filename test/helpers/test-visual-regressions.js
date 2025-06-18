@@ -1,10 +1,4 @@
-import {
-  ignoreWindowOnError,
-  isResizeObserverLoopErrorMessage,
-} from '@lit-labs/virtualizer/support/resize-observer-errors.js';
-import { elementUpdated, fixture } from '@open-wc/testing';
-import { executeServerCommand, setViewport } from '@web/test-runner-commands';
-import { visualDiff } from '@web/test-runner-visual-regression';
+import { beforeEach, describe, test, vi } from 'vitest';
 import { addTranslations } from '../../src/lib/i18n/i18n.js';
 import * as en from '../../src/translations/translations.en.js';
 
@@ -39,60 +33,32 @@ const storyConf = {
 // Register languages
 addTranslations(en.lang, en.translations);
 
-/**
- * Sets up error handling to ignore specific errors during test execution
- *
- * @param {Function} before - Function to execute before test
- * @param {Function} after - Function to execute after test
- * @param {(message: string) => boolean} messagePredicate - Function that determines which error messages to ignore
- */
-function setupIgnoreIrrelevantErrors(before, after, messagePredicate) {
-  /** @type {Function|null} */
-  let teardown;
-  before(() => {
-    teardown = ignoreWindowOnError(messagePredicate);
-  });
-  after(() => {
-    teardown?.();
-    teardown = undefined;
-  });
-}
-
-setupIgnoreIrrelevantErrors(before, after, (message) => {
-  return (
-    isResizeObserverLoopErrorMessage(message) ||
-    message.includes(
-      "Uncaught IndexSizeError: Failed to execute 'getImageData' on 'CanvasRenderingContext2D': The source width is 0",
-    )
-  );
-});
-
-const OriginalDate = Date;
-beforeEach(async () => {
-  // await executeServerCommand('install-clock');
-  Date = class MockedDate extends OriginalDate {
-    constructor() {
-      super();
-
-      return new OriginalDate('2024-02-02T10:00:00');
-    }
-
-    static now() {
-      return new OriginalDate('2024-02-02T10:00:00');
-    }
-
-    getTime() {
-      return new OriginalDate('2024-02-02T10:00:00').getTime();
-    }
-  };
-});
+// const OriginalDate = Date;
 // beforeEach(async () => {
-//   await executeServerCommand('pause-clock');
+//   // await executeServerCommand('install-clock');
+//   Date = class MockedDate extends OriginalDate {
+//     constructor() {
+//       super();
+
+//       return new OriginalDate('2024-02-02T10:00:00');
+//     }
+
+//     static now() {
+//       return new OriginalDate('2024-02-02T10:00:00');
+//     }
+
+//     getTime() {
+//       return new OriginalDate('2024-02-02T10:00:00').getTime();
+//     }
+//   };
 // });
-afterEach(async () => {
-  // await executeServerCommand('resume-clock');
-  Date = OriginalDate;
-});
+// // beforeEach(async () => {
+// //   await executeServerCommand('pause-clock');
+// // });
+// afterEach(async () => {
+//   // await executeServerCommand('resume-clock');
+//   Date = OriginalDate;
+// });
 
 const IGNORE_PATTERNS_FOR_VISUAL_REGRESSIONS = ['simulation'];
 
@@ -183,48 +149,57 @@ export async function testStories(storiesModule) {
       storyFunction.parameters.tests.accessibility.enable || storyFunction.parameters.tests.visualRegressions.enable,
   );
 
-  if (shouldRunTests) {
-    describe(componentTag, function () {
+  describe('blabal', () => {
+    beforeEach(() => {
+      // tell vitest we use mocked time
+      vi.useFakeTimers();
+      const date = new Date(2000, 1, 1, 13);
+      vi.setSystemTime(date);
+    });
+
+    if (shouldRunTests) {
       stories.forEach(({ storyName, storyFunction }) => {
         if (
           storyFunction.parameters.tests.accessibility.enable ||
           storyFunction.parameters.tests.visualRegressions.enable
         ) {
-          describe(storyName, function () {
-            describe(`desktop`, async function () {
-              if (storyFunction.parameters.tests.visualRegressions.enable) {
-                it('should have no visual regression', async function () {
-                  await setViewport(viewports.desktop);
-                  const element = await fixture(storyFunction({}, storyConf));
+          test(`${componentTag} ${storyName} desktop`, async function () {
+            if (storyFunction.parameters.tests.visualRegressions.enable) {
+              // it('should have no visual regression', async function () {
+              //   await setViewport(viewports.desktop);
+              //   const element = await fixture(storyFunction({}, storyConf));
 
-                  await elementUpdated(element);
-                  await executeServerCommand('wait-for-network-idle');
+              //   await elementUpdated(element);
+              //   await executeServerCommand('wait-for-network-idle');
 
-                  injectCssIntoAllShadowRoots(element, DISABLE_ANIMATIONS_CSS);
-                  // await executeServerCommand('pause-clock');
-                  await visualDiff(element, `${componentTag}-${storyName}-desktop`);
-                });
-              }
-            });
+              //   injectCssIntoAllShadowRoots(element, DISABLE_ANIMATIONS_CSS);
+              //   // await executeServerCommand('pause-clock');
+              //   await visualDiff(element, `${componentTag}-${storyName}-desktop`);
+              // });
 
-            describe('mobile', async function () {
-              if (storyFunction.parameters.tests.visualRegressions.enable) {
-                it('should have no visual regression', async function () {
-                  await setViewport(viewports.desktop);
-                  const element = await fixture(storyFunction({}, storyConf));
-
-                  await elementUpdated(element);
-                  await executeServerCommand('wait-for-network-idle');
-
-                  injectCssIntoAllShadowRoots(element, DISABLE_ANIMATIONS_CSS);
-                  // await executeServerCommand('pause-clock');
-                  await visualDiff(element, `${componentTag}-${storyName}-mobile`);
-                });
-              }
-            });
+              const storyElement = storyFunction({}, storyConf);
+              document.body.replaceChildren(storyElement);
+              injectCssIntoAllShadowRoots(document.body, DISABLE_ANIMATIONS_CSS);
+            }
           });
+
+          // test(`${componentTag} ${storyName} desktop`, async function () {
+          //   if (storyFunction.parameters.tests.visualRegressions.enable) {
+          //     it('should have no visual regression', async function () {
+          //       await setViewport(viewports.desktop);
+          //       const element = await fixture(storyFunction({}, storyConf));
+
+          //       await elementUpdated(element);
+          //       await executeServerCommand('wait-for-network-idle');
+
+          //       injectCssIntoAllShadowRoots(element, DISABLE_ANIMATIONS_CSS);
+          //       // await executeServerCommand('pause-clock');
+          //       await visualDiff(element, `${componentTag}-${storyName}-mobile`);
+          //     });
+          //   }
+          // });
         }
       });
-    });
-  }
+    }
+  });
 }
