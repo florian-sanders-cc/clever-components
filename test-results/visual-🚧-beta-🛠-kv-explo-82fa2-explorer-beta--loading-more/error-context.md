@@ -1,0 +1,41 @@
+# Page snapshot
+
+```yaml
+- text: Filter by field
+- textbox "Filter by field"
+- button "Apply the filter"
+- text: Field Value first field first field value
+- button "Edit the value at index 1"
+- button "Delete the field at index 0"
+- button "Copy value at index 0 to clipboard"
+- text: second field second field value
+- button "Edit the value at index 2"
+- button "Delete the field at index 1"
+- button "Copy value at index 1 to clipboard"
+- text: "??? ? ??? ??????????? ????"
+- button "Edit the value at index 3" [disabled]
+- button "Delete the field at index 2" [disabled]
+- button "Copy value at index 2 to clipboard" [disabled]
+- text: "??? ?? ??? ??????????? ??"
+- button "Edit the value at index 4" [disabled]
+- button "Delete the field at index 3" [disabled]
+- button "Copy value at index 3 to clipboard" [disabled]
+- text: "??? ???? ??? ??????????? ?"
+- button "Edit the value at index 5" [disabled]
+- button "Delete the field at index 4" [disabled]
+- button "Copy value at index 4 to clipboard" [disabled]
+- text: "??? ?????? ??? ????????"
+- button "Edit the value at index 6" [disabled]
+- button "Delete the field at index 5" [disabled]
+- button "Copy value at index 5 to clipboard" [disabled]
+- text: "??? ????? ??? ??????????? ??"
+- button "Edit the value at index 7" [disabled]
+- button "Delete the field at index 6" [disabled]
+- button "Copy value at index 6 to clipboard" [disabled]
+- text: Field
+- textbox "Field"
+- text: Value
+- textbox "Value"
+- button "Add the field": Add
+- text: beta
+```

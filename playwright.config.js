@@ -1,43 +1,21 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-  // Look for test files in the "tests" directory, relative to this configuration file.
-  testDir: 'tests-playwright',
-  testMatch: '*.spec.js',
-  globalSetup: './global-setup.js',
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-  ],
-
-  // Run all tests in parallel.
-  fullyParallel: true,
-
-  // Fail the build on CI if you accidentally left test.only in the source code.
-  // forbidOnly: !!process.env.CI,
-
-  // Retry on CI only.
-  retries: process.env.CI ? 2 : 0,
-
-  // Opt out of parallel tests on CI.
-  workers: process.env.CI ? 1 : undefined,
-
-  // Reporter to use
+  snapshotDir: './tests-playwright',
   reporter: 'html',
-
+  testDir: './tests-playwright',
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
   use: {
-    // Base URL to use in actions like `await page.goto('/')`.
-    baseURL: 'http://localhost:5173',
-
-    // Collect trace when retrying the failed test.
     trace: 'on-first-retry',
   },
-  // Run your local dev server before starting the tests.
   webServer: {
-    command: 'npm run vite',
-    url: 'http://localhost:5173',
-    reuseExistingServer: false,
+    command: 'npm run storybook:dev',
+    url: 'http://localhost:6006',
+    reuseExistingServer: !process.env.CI,
+    stdout: 'ignore',
+    stderr: 'pipe',
   },
 });

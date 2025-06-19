@@ -299,8 +299,7 @@ export class CcButton extends LitElement {
         -->
         <div class="text-wrapper ${classMap({ 'cancel-mode': this._cancelMode })}">
           ${this.image != null ? html` <img src=${this.image} alt="" /> ` : ''}
-          ${this.icon != null ? html` <cc-icon .icon="${this.icon}"></cc-icon> ` : ''} ${new Date()} ${Date.now()}
-          ${new Date().getTime()}
+          ${this.icon != null ? html` <cc-icon .icon="${this.icon}"></cc-icon> ` : ''}
           <div class="text-normal">
             <slot></slot>
           </div>
@@ -376,7 +375,7 @@ export class CcButton extends LitElement {
         }
 
         .primary {
-          --btn-color: blue;
+          --btn-color: var(--cc-color-bg-primary);
         }
 
         .success {
