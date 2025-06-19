@@ -1,9 +1,5 @@
-import { globSync } from 'tinyglobby';
-import { testStories } from './test-visual-regressions.js';
+console.log(process.env.stories);
 
-const storyModules = globSync('../src/components/cc-input-date/*.stories.js');
-console.log(storyModules);
-
-for (const [path, storiesModule] of Object.entries(storyModules)) {
-  testStories(storiesModule);
-}
+// for (const [path, storiesModule] of Object.entries(storyModules)) {
+//   testStories(storiesModule);
+// }

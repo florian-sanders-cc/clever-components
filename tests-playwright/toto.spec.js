@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 
+console.log(process.env.stories);
 test('example test', async ({ page }) => {
   await page.setContent(`
     <html>

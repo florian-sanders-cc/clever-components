@@ -4,6 +4,7 @@ export default defineConfig({
   // Look for test files in the "tests" directory, relative to this configuration file.
   testDir: 'tests-playwright',
   testMatch: '*.spec.js',
+  globalSetup: './global-setup.js',
   projects: [
     {
       name: 'chromium',
@@ -33,13 +34,6 @@ export default defineConfig({
     // Collect trace when retrying the failed test.
     trace: 'on-first-retry',
   },
-  // Configure projects for major browsers.
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-  ],
   // Run your local dev server before starting the tests.
   webServer: {
     command: 'npm run vite',
